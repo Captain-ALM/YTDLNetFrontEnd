@@ -55,25 +55,34 @@ namespace com.captainalm.YTDLNetFrontEnd
             Environment.Exit(0);
         }
 
+        private void setEnableButtons(bool value)
+        {
+            this.Invoke(new Action(() =>
+            {
+                buttonExit.Enabled = value;
+                buttonInstall.Enabled = value;
+                buttonGo.Enabled = value;
+            }));
+        }
+
         private void backgroundWorkerMain_DoWork(object sender, DoWorkEventArgs e)
         {
             switch ((BWArg)e.Argument)
             {
                 case BWArg.Install:
-                     this.Invoke(new Action(() => {
-                         buttonExit.Enabled = false;
-                         buttonInstall.Enabled = false;
-                     }));
+                    setEnableButtons(false);
                      
                      var loctxt = 
                      YTDL.executeInstall((YTDL.getInstalled() != ApplicationType.Unavailable) ? YTDL.getInstalled() :
                     (((Control.ModifierKeys & Keys.Shift) == Keys.Shift) ? ApplicationType.YoutubeDL : ApplicationType.YT_DLP), 
                     YTDL.getInstalled() != ApplicationType.Unavailable) +
                      Environment.NewLine;
+
                      this.Invoke(new Action(() =>
                      {
-                         textBoxOutput.Text += loctxt;
+                         textBoxOutput.AppendText(loctxt);
                      }));
+
                     if (YTDL.getInstalled() != ApplicationType.Unavailable)
                     {
                         this.Invoke(new Action(() =>
@@ -82,18 +91,11 @@ namespace com.captainalm.YTDLNetFrontEnd
                             buttonInstall.Text = "Update";
                         }));
                     }
-                    this.Invoke(new Action(() =>
-                    {
-                        buttonInstall.Enabled = true;
-                        buttonExit.Enabled = true;
-                    }));
+
+                    setEnableButtons(true);
                     break;
                 case BWArg.Go:
-                    this.Invoke(new Action(() =>
-                    {
-                        buttonExit.Enabled = false;
-                        buttonGo.Enabled = false;
-                    }));
+                    setEnableButtons(false);
 
                     if (theProcess != null)
                     {
@@ -106,6 +108,7 @@ namespace com.captainalm.YTDLNetFrontEnd
                     this.Invoke(new Action(() =>
                         {
                             theTarget = textBoxEntry.Text;
+                            textBoxEntry.Text = "";
                         }));
 
                     theProcess = YTDL.executeApplication(theTarget);
@@ -119,11 +122,8 @@ namespace com.captainalm.YTDLNetFrontEnd
                         theProcess.EnableRaisingEvents = true;
                         theProcess.WaitForExit();
                     }
-                    this.Invoke(new Action(() =>
-                    {
-                        buttonGo.Enabled = true;
-                        buttonExit.Enabled = true;
-                    }));
+
+                    setEnableButtons(true);
                     break;
                 default:
                     break;
@@ -132,24 +132,37 @@ namespace com.captainalm.YTDLNetFrontEnd
 
         void theProcess_Exited(object sender, EventArgs e)
         {
-            theProcess.CancelOutputRead();
-            theProcess.CancelErrorRead();
+            try
+            {
+                theProcess.CancelOutputRead();
+            }
+            catch (InvalidOperationException ex)
+            {
+            }
+            try
+            {
+                theProcess.CancelErrorRead();
+            }
+            catch (InvalidOperationException ex)
+            {
+            }
         }
 
         void theProcess_ErrorDataReceived(object sender, DataReceivedEventArgs e)
         {
-            if (e.Data.Equals("")) return;
+            if (e.Data == null || e.Data.Equals("")) return;
             this.Invoke(new Action(() =>
             {
-                textBoxOutput.Text += "Error: " + e.Data + Environment.NewLine;
+                textBoxOutput.AppendText("Error: " + e.Data + Environment.NewLine);
             }));
         }
 
         void theProcess_OutputDataReceived(object sender, DataReceivedEventArgs e)
         {
+            if (e.Data == null || e.Data.Equals("")) return;
             this.Invoke(new Action(() =>
             {
-                textBoxOutput.Text += e.Data + Environment.NewLine;
+                textBoxOutput.AppendText(e.Data + Environment.NewLine);
             }));
         }
 

@@ -46,26 +46,14 @@ namespace com.captainalm.YTDLNetFrontEnd
                 default:
                     return "Invalid Package Name";
             }
-            var pipProSet = new ProcessStartInfo(findExecutableInPath("python"), "-m pip install " + packageName + ((update) ? " --upgrade" : "")) { UseShellExecute = false, CreateNoWindow = true, RedirectStandardOutput = true, RedirectStandardError = true };
+            var pipProSet = new ProcessStartInfo(findExecutableInPath("python"), "-m pip install " + packageName + ((update) ? " --upgrade" : ""))
+            { UseShellExecute = false, CreateNoWindow = true, RedirectStandardOutput = true, RedirectStandardError = true, StandardOutputEncoding = Encoding.UTF8, StandardErrorEncoding = Encoding.UTF8 };
             using (var pipPro = Process.Start(pipProSet))
             {
-                using (var errTSR = new ThreadedStreamReader(pipPro.StandardError.BaseStream))
-                {
-                    using (var outTSR = new ThreadedStreamReader(pipPro.StandardOutput.BaseStream))
-                    {
-                        pipPro.WaitForExit();
-                        try
-                        {
-                            var terr = System.Text.Encoding.UTF8.GetString(errTSR.getData());
-                            var tout = System.Text.Encoding.UTF8.GetString(outTSR.getData());
-                            if (terr != "") return terr; else return tout;
-                        }
-                        catch (Exception e)
-                        {
-                            return "Exception:" + e.GetType().FullName + ":" + e.Message;
-                        }
-                    }
-                }
+                var rpote = new ReadProcessOutputToEnd(pipPro);
+                pipPro.WaitForExit();
+                if (!rpote.getError().Equals("")) return rpote.getError();
+                return rpote.getOutput();
             }
         }
 
@@ -76,11 +64,13 @@ namespace com.captainalm.YTDLNetFrontEnd
             {
                 try
                 {
-                    var pipProSet = new ProcessStartInfo(findExecutableInPath("python"), "-m pip freeze") {UseShellExecute = false, CreateNoWindow = true, RedirectStandardOutput = true};
+                    var pipProSet = new ProcessStartInfo(findExecutableInPath("python"), "-m pip freeze")
+                    { UseShellExecute = false, CreateNoWindow = true, RedirectStandardOutput = true, RedirectStandardError = true, StandardOutputEncoding = Encoding.UTF8, StandardErrorEncoding = Encoding.UTF8 };
                     using (var pipPro = Process.Start(pipProSet))
                     {
-                        var theList = pipPro.StandardOutput.ReadToEnd();
+                        var rpote = new ReadProcessOutputToEnd(pipPro);
                         pipPro.WaitForExit();
+                        var theList = rpote.getOutput();
                         if (theList.Contains("yt-dlp")) installed = ApplicationType.YT_DLP;
                         else if (theList.Contains("youtube-dl")) installed = ApplicationType.YoutubeDL;
                         else installed = ApplicationType.Unavailable;
@@ -114,44 +104,67 @@ namespace com.captainalm.YTDLNetFrontEnd
         YT_DLP = 2
     }
 
-    class ThreadedStreamReader : IDisposable
+    class ReadProcessOutputToEnd : IDisposable
     {
-        Thread theThread;
-        MemoryStream msToRet;
-        Stream theStream;
-        public ThreadedStreamReader(Stream streamIn)
+        Process theProcess;
+        string tout = "";
+        string terr = "";
+
+
+        public ReadProcessOutputToEnd(Process processIn)
         {
-            theStream = streamIn;
-            msToRet = new MemoryStream();
-            theThread = new Thread(thread_execute);
-            theThread.IsBackground = true;
-            theThread.Start();
+            theProcess = processIn;
+            theProcess.BeginOutputReadLine();
+            theProcess.BeginErrorReadLine();
+            theProcess.OutputDataReceived += theProcess_OutputDataReceived;
+            theProcess.ErrorDataReceived += theProcess_ErrorDataReceived;
+            theProcess.Exited += theProcess_Exited;
+            theProcess.EnableRaisingEvents = true;
         }
 
-        void thread_execute()
+        void theProcess_Exited(object sender, EventArgs e)
         {
             try
             {
-                int b;
-                while ((b = theStream.ReadByte()) != -1) msToRet.WriteByte((byte)b);
+                theProcess.CancelOutputRead();
             }
-            catch (Exception e)
+            catch (InvalidOperationException ex)
             {
-                var msg = System.Text.Encoding.UTF8.GetBytes("Exception:" + e.GetType().FullName + ":" + e.Message);
-                msToRet.Write(msg, 0, msg.Length);
+            }
+            try
+            {
+                theProcess.CancelErrorRead();
+            }
+            catch (InvalidOperationException ex)
+            {
             }
         }
 
-        public byte[] getData()
+        void theProcess_ErrorDataReceived(object sender, DataReceivedEventArgs e)
         {
-            theThread.Join();
-            return msToRet.ToArray();
+            if (e.Data == null || e.Data.Equals("")) return;
+            terr += e.Data + Environment.NewLine;
+        }
+
+        void theProcess_OutputDataReceived(object sender, DataReceivedEventArgs e)
+        {
+            if (e.Data == null || e.Data.Equals("")) return;
+            tout += e.Data + Environment.NewLine;
+        }
+
+        public string getOutput()
+        {
+            return tout;
+        }
+
+        public string getError()
+        {
+            return terr;
         }
 
         public void Dispose()
         {
-            theThread.Join();
-            msToRet.Close();
+            theProcess.Close();
         }
     }
 }

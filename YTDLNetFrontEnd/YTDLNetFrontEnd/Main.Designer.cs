@@ -120,7 +120,7 @@
             this.buttonInstall.Margin = new System.Windows.Forms.Padding(0);
             this.buttonInstall.Name = "buttonInstall";
             this.buttonInstall.Size = new System.Drawing.Size(142, 24);
-            this.buttonInstall.TabIndex = 4;
+            this.buttonInstall.TabIndex = 1;
             this.buttonInstall.Text = "Install";
             this.buttonInstall.UseVisualStyleBackColor = true;
             this.buttonInstall.Click += new System.EventHandler(this.buttonInstall_Click);
@@ -132,7 +132,7 @@
             this.buttonExit.Margin = new System.Windows.Forms.Padding(0);
             this.buttonExit.Name = "buttonExit";
             this.buttonExit.Size = new System.Drawing.Size(142, 24);
-            this.buttonExit.TabIndex = 5;
+            this.buttonExit.TabIndex = 2;
             this.buttonExit.Text = "Exit";
             this.buttonExit.UseVisualStyleBackColor = true;
             this.buttonExit.Click += new System.EventHandler(this.buttonExit_Click);
