@@ -32,6 +32,7 @@ namespace com.captainalm.YTDLNetFrontEnd
                 buttonInstall.Text = "Update";
             }
             Environment.CurrentDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyVideos);
+            textBoxSaveDir.Text = Environment.GetFolderPath(Environment.SpecialFolder.MyVideos);
         }
 
         private void buttonGo_Click(object sender, EventArgs e)
@@ -43,6 +44,16 @@ namespace com.captainalm.YTDLNetFrontEnd
         private void buttonInstall_Click(object sender, EventArgs e)
         {
             if (!backgroundWorkerMain.IsBusy) backgroundWorkerMain.RunWorkerAsync(BWArg.Install);
+        }
+
+        private void buttonSaveTo_Click(object sender, EventArgs e)
+        {
+            folderBrowserDialogMain.SelectedPath = Environment.CurrentDirectory;
+            if (folderBrowserDialogMain.ShowDialog(this) == System.Windows.Forms.DialogResult.OK)
+            {
+                Environment.CurrentDirectory = folderBrowserDialogMain.SelectedPath;
+                textBoxSaveDir.Text = folderBrowserDialogMain.SelectedPath;
+            }
         }
 
         private void buttonExit_Click(object sender, EventArgs e)
