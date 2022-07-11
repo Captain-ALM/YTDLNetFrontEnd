@@ -9,12 +9,13 @@ using System.Text;
 using System.Windows.Forms;
 using System.IO;
 using System.Threading.Tasks;
+using com.captainalm.YTDLNetFrontEnd.util;
 
 namespace com.captainalm.YTDLNetFrontEnd
 {
     public partial class Main : Form
     {
-        private Process theProcess;
+        private MonitorableProcess theProcess;
 
         public Main()
         {
@@ -33,12 +34,14 @@ namespace com.captainalm.YTDLNetFrontEnd
             }
             Environment.CurrentDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyVideos);
             textBoxSaveDir.Text = Environment.GetFolderPath(Environment.SpecialFolder.MyVideos);
+            textBoxOutput.AppendText("Starting: " + ProductName + " : " + ProductVersion + Environment.NewLine);
+            textBoxOutput.AppendText("Copyright: (C) " + this.CompanyName + " : BSD-3-Clause License" + Environment.NewLine);
         }
 
         private void buttonGo_Click(object sender, EventArgs e)
         {
             if (!backgroundWorkerMain.IsBusy) backgroundWorkerMain.RunWorkerAsync(BWArg.Go);
-            
+
         }
 
         private void buttonInstall_Click(object sender, EventArgs e)
@@ -82,17 +85,28 @@ namespace com.captainalm.YTDLNetFrontEnd
             {
                 case BWArg.Install:
                     setEnableButtons(false);
-                     
-                     var loctxt = 
-                     YTDL.executeInstall((YTDL.getInstalled() != ApplicationType.Unavailable) ? YTDL.getInstalled() :
-                    (((Control.ModifierKeys & Keys.Shift) == Keys.Shift) ? ApplicationType.YoutubeDL : ApplicationType.YT_DLP), 
-                    YTDL.getInstalled() != ApplicationType.Unavailable) +
-                     Environment.NewLine;
 
-                     this.Invoke(new Action(() =>
-                     {
-                         textBoxOutput.AppendText(loctxt);
-                     }));
+                    using (var locpro =
+                    YTDL.executeInstall((YTDL.getInstalled() != ApplicationType.Unavailable) ? YTDL.getInstalled() :
+                    (((Control.ModifierKeys & Keys.Shift) == Keys.Shift) ? ApplicationType.YoutubeDL : ApplicationType.YT_DLP),
+                    YTDL.getInstalled() != ApplicationType.Unavailable))
+                    {
+                        locpro.addOuputReceiver(new OutputReceiverTextbox(textBoxOutput));
+                        locpro.addErrorReceiver(new OutputReaderPrefixed(textBoxOutput, "Error: "));
+                        try
+                        {
+                            locpro.start();
+                            locpro.waitForExit();
+                        }
+                        catch (Exception ex)
+                        {
+                            this.Invoke(new Action(() =>
+                            {
+                                textBoxOutput.AppendText("Could not start python, is python installed?" + Environment.NewLine
+                                    + ex.GetType().FullName + " : " + ex.Message + Environment.NewLine);
+                            }));
+                        }
+                    }
 
                     if (YTDL.getInstalled() != ApplicationType.Unavailable)
                     {
@@ -110,8 +124,9 @@ namespace com.captainalm.YTDLNetFrontEnd
 
                     if (theProcess != null)
                     {
-                        if (!theProcess.HasExited) theProcess.WaitForExit();
-                        theProcess.Close();
+                        if (((Control.ModifierKeys & Keys.Shift) == Keys.Shift)) theProcess.kill();
+                        theProcess.waitForExit();
+                        theProcess.close();
                     }
 
                     var theTarget = "";
@@ -120,18 +135,33 @@ namespace com.captainalm.YTDLNetFrontEnd
                         {
                             theTarget = textBoxEntry.Text;
                             textBoxEntry.Text = "";
+                            textBoxOutput.AppendText("Downloading: " + theTarget + Environment.NewLine);
                         }));
 
                     theProcess = YTDL.executeApplication(theTarget);
                     if (theProcess != null)
                     {
-                        theProcess.BeginOutputReadLine();
-                        theProcess.BeginErrorReadLine();
-                        theProcess.OutputDataReceived += theProcess_OutputDataReceived;
-                        theProcess.ErrorDataReceived += theProcess_ErrorDataReceived;
-                        theProcess.Exited += theProcess_Exited;
-                        theProcess.EnableRaisingEvents = true;
-                        theProcess.WaitForExit();
+                        theProcess.addOuputReceiver(new OutputReceiverTextbox(textBoxOutput));
+                        theProcess.addErrorReceiver(new OutputReaderPrefixed(textBoxOutput, "Error: "));
+                        try
+                        {
+                            theProcess.start();
+                        }
+                        catch (Exception ex)
+                        {
+                            this.Invoke(new Action(() =>
+                            {
+                                textBoxOutput.AppendText("Could not start python, is python and the downloader installed?" + Environment.NewLine
+                                    + ex.GetType().FullName + " : " + ex.Message + Environment.NewLine);
+                            }));
+                        }
+                    }
+                    else
+                    {
+                        this.Invoke(new Action(() =>
+                        {
+                            textBoxOutput.AppendText("Could not start python, is python and the downloader installed?" + Environment.NewLine);
+                        }));
                     }
 
                     setEnableButtons(true);
@@ -141,43 +171,8 @@ namespace com.captainalm.YTDLNetFrontEnd
             }
         }
 
-        void theProcess_Exited(object sender, EventArgs e)
+        private enum BWArg
         {
-            try
-            {
-                theProcess.CancelOutputRead();
-            }
-            catch (InvalidOperationException ex)
-            {
-            }
-            try
-            {
-                theProcess.CancelErrorRead();
-            }
-            catch (InvalidOperationException ex)
-            {
-            }
-        }
-
-        void theProcess_ErrorDataReceived(object sender, DataReceivedEventArgs e)
-        {
-            if (e.Data == null || e.Data.Equals("")) return;
-            this.Invoke(new Action(() =>
-            {
-                textBoxOutput.AppendText("Error: " + e.Data + Environment.NewLine);
-            }));
-        }
-
-        void theProcess_OutputDataReceived(object sender, DataReceivedEventArgs e)
-        {
-            if (e.Data == null || e.Data.Equals("")) return;
-            this.Invoke(new Action(() =>
-            {
-                textBoxOutput.AppendText(e.Data + Environment.NewLine);
-            }));
-        }
-
-        private enum BWArg {
             Install,
             Go
         }

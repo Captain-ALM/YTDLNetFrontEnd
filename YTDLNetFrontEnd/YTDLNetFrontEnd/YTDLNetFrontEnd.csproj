@@ -55,6 +55,9 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="util\IProcessOuputReceiver.cs" />
+    <Compile Include="util\MonitorableProcess.cs" />
+    <Compile Include="util\OutputReceivers.cs" />
     <Compile Include="YTDL.cs" />
     <EmbeddedResource Include="Main.resx">
       <DependentUpon>Main.cs</DependentUpon>
