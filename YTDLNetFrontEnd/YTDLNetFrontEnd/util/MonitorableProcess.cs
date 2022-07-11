@@ -141,6 +141,7 @@ namespace com.captainalm.YTDLNetFrontEnd.util
         {
             if (representation == null) return;
             waitForExit();
+            if (representation != null && startInfo.RedirectStandardInput) representation.StandardInput.Close();
             representation.Close();
         }
 
