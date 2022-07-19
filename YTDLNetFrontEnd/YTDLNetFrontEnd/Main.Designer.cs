@@ -30,15 +30,17 @@
         {
             this.tableLayoutPanelMain = new System.Windows.Forms.TableLayoutPanel();
             this.tableLayoutPanelEntry = new System.Windows.Forms.TableLayoutPanel();
+            this.buttonSaveTo = new System.Windows.Forms.Button();
+            this.textBoxSaveDir = new System.Windows.Forms.TextBox();
             this.textBoxEntry = new System.Windows.Forms.TextBox();
             this.buttonGo = new System.Windows.Forms.Button();
             this.textBoxOutput = new System.Windows.Forms.TextBox();
             this.buttonInstall = new System.Windows.Forms.Button();
             this.buttonExit = new System.Windows.Forms.Button();
             this.backgroundWorkerMain = new System.ComponentModel.BackgroundWorker();
-            this.textBoxSaveDir = new System.Windows.Forms.TextBox();
-            this.buttonSaveTo = new System.Windows.Forms.Button();
             this.folderBrowserDialogMain = new System.Windows.Forms.FolderBrowserDialog();
+            this.textBoxExtraArgs = new System.Windows.Forms.TextBox();
+            this.labelExtraArgs = new System.Windows.Forms.Label();
             this.tableLayoutPanelMain.SuspendLayout();
             this.tableLayoutPanelEntry.SuspendLayout();
             this.SuspendLayout();
@@ -56,11 +58,12 @@
             this.tableLayoutPanelMain.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanelMain.Margin = new System.Windows.Forms.Padding(1);
             this.tableLayoutPanelMain.Name = "tableLayoutPanelMain";
-            this.tableLayoutPanelMain.RowCount = 4;
-            this.tableLayoutPanelMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 15F));
-            this.tableLayoutPanelMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 15F));
-            this.tableLayoutPanelMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 15F));
-            this.tableLayoutPanelMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 55F));
+            this.tableLayoutPanelMain.RowCount = 5;
+            this.tableLayoutPanelMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 12.5F));
+            this.tableLayoutPanelMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 12.5F));
+            this.tableLayoutPanelMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 12.5F));
+            this.tableLayoutPanelMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 12.5F));
+            this.tableLayoutPanelMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanelMain.Size = new System.Drawing.Size(284, 161);
             this.tableLayoutPanelMain.TabIndex = 0;
             // 
@@ -70,25 +73,49 @@
             this.tableLayoutPanelMain.SetColumnSpan(this.tableLayoutPanelEntry, 2);
             this.tableLayoutPanelEntry.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 75F));
             this.tableLayoutPanelEntry.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tableLayoutPanelEntry.Controls.Add(this.textBoxExtraArgs, 0, 2);
             this.tableLayoutPanelEntry.Controls.Add(this.buttonSaveTo, 1, 1);
             this.tableLayoutPanelEntry.Controls.Add(this.textBoxSaveDir, 0, 1);
             this.tableLayoutPanelEntry.Controls.Add(this.textBoxEntry, 0, 0);
             this.tableLayoutPanelEntry.Controls.Add(this.buttonGo, 1, 0);
+            this.tableLayoutPanelEntry.Controls.Add(this.labelExtraArgs, 1, 2);
             this.tableLayoutPanelEntry.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanelEntry.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanelEntry.Margin = new System.Windows.Forms.Padding(0);
             this.tableLayoutPanelEntry.Name = "tableLayoutPanelEntry";
-            this.tableLayoutPanelEntry.RowCount = 2;
-            this.tableLayoutPanelMain.SetRowSpan(this.tableLayoutPanelEntry, 2);
-            this.tableLayoutPanelEntry.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanelEntry.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanelEntry.Size = new System.Drawing.Size(284, 48);
+            this.tableLayoutPanelEntry.RowCount = 3;
+            this.tableLayoutPanelMain.SetRowSpan(this.tableLayoutPanelEntry, 3);
+            this.tableLayoutPanelEntry.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.tableLayoutPanelEntry.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33334F));
+            this.tableLayoutPanelEntry.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33334F));
+            this.tableLayoutPanelEntry.Size = new System.Drawing.Size(284, 60);
             this.tableLayoutPanelEntry.TabIndex = 0;
+            // 
+            // buttonSaveTo
+            // 
+            this.buttonSaveTo.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.buttonSaveTo.Location = new System.Drawing.Point(213, 19);
+            this.buttonSaveTo.Margin = new System.Windows.Forms.Padding(0);
+            this.buttonSaveTo.Name = "buttonSaveTo";
+            this.buttonSaveTo.Size = new System.Drawing.Size(71, 20);
+            this.buttonSaveTo.TabIndex = 3;
+            this.buttonSaveTo.Text = "Save To...";
+            this.buttonSaveTo.UseVisualStyleBackColor = true;
+            this.buttonSaveTo.Click += new System.EventHandler(this.buttonSaveTo_Click);
+            // 
+            // textBoxSaveDir
+            // 
+            this.textBoxSaveDir.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBoxSaveDir.Location = new System.Drawing.Point(0, 19);
+            this.textBoxSaveDir.Margin = new System.Windows.Forms.Padding(0);
+            this.textBoxSaveDir.Name = "textBoxSaveDir";
+            this.textBoxSaveDir.Size = new System.Drawing.Size(213, 20);
+            this.textBoxSaveDir.TabIndex = 2;
             // 
             // textBoxEntry
             // 
             this.textBoxEntry.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxEntry.Location = new System.Drawing.Point(0, 2);
+            this.textBoxEntry.Location = new System.Drawing.Point(0, 0);
             this.textBoxEntry.Margin = new System.Windows.Forms.Padding(0);
             this.textBoxEntry.Name = "textBoxEntry";
             this.textBoxEntry.Size = new System.Drawing.Size(213, 20);
@@ -100,7 +127,7 @@
             this.buttonGo.Location = new System.Drawing.Point(213, 0);
             this.buttonGo.Margin = new System.Windows.Forms.Padding(0);
             this.buttonGo.Name = "buttonGo";
-            this.buttonGo.Size = new System.Drawing.Size(71, 24);
+            this.buttonGo.Size = new System.Drawing.Size(71, 19);
             this.buttonGo.TabIndex = 1;
             this.buttonGo.Text = "Go!";
             this.buttonGo.UseVisualStyleBackColor = true;
@@ -110,23 +137,23 @@
             // 
             this.tableLayoutPanelMain.SetColumnSpan(this.textBoxOutput, 2);
             this.textBoxOutput.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.textBoxOutput.Location = new System.Drawing.Point(1, 73);
+            this.textBoxOutput.Location = new System.Drawing.Point(1, 81);
             this.textBoxOutput.Margin = new System.Windows.Forms.Padding(1);
             this.textBoxOutput.Multiline = true;
             this.textBoxOutput.Name = "textBoxOutput";
             this.textBoxOutput.ReadOnly = true;
             this.textBoxOutput.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.textBoxOutput.Size = new System.Drawing.Size(282, 87);
+            this.textBoxOutput.Size = new System.Drawing.Size(282, 79);
             this.textBoxOutput.TabIndex = 4;
             this.textBoxOutput.WordWrap = false;
             // 
             // buttonInstall
             // 
             this.buttonInstall.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.buttonInstall.Location = new System.Drawing.Point(0, 48);
+            this.buttonInstall.Location = new System.Drawing.Point(0, 60);
             this.buttonInstall.Margin = new System.Windows.Forms.Padding(0);
             this.buttonInstall.Name = "buttonInstall";
-            this.buttonInstall.Size = new System.Drawing.Size(142, 24);
+            this.buttonInstall.Size = new System.Drawing.Size(142, 20);
             this.buttonInstall.TabIndex = 2;
             this.buttonInstall.Text = "Install";
             this.buttonInstall.UseVisualStyleBackColor = true;
@@ -135,10 +162,10 @@
             // buttonExit
             // 
             this.buttonExit.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.buttonExit.Location = new System.Drawing.Point(142, 48);
+            this.buttonExit.Location = new System.Drawing.Point(142, 60);
             this.buttonExit.Margin = new System.Windows.Forms.Padding(0);
             this.buttonExit.Name = "buttonExit";
-            this.buttonExit.Size = new System.Drawing.Size(142, 24);
+            this.buttonExit.Size = new System.Drawing.Size(142, 20);
             this.buttonExit.TabIndex = 3;
             this.buttonExit.Text = "Exit";
             this.buttonExit.UseVisualStyleBackColor = true;
@@ -148,26 +175,24 @@
             // 
             this.backgroundWorkerMain.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorkerMain_DoWork);
             // 
-            // textBoxSaveDir
+            // textBoxExtraArgs
             // 
-            this.textBoxSaveDir.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxSaveDir.Location = new System.Drawing.Point(0, 26);
-            this.textBoxSaveDir.Margin = new System.Windows.Forms.Padding(0);
-            this.textBoxSaveDir.Name = "textBoxSaveDir";
-            this.textBoxSaveDir.Size = new System.Drawing.Size(213, 20);
-            this.textBoxSaveDir.TabIndex = 2;
+            this.textBoxExtraArgs.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBoxExtraArgs.Location = new System.Drawing.Point(0, 39);
+            this.textBoxExtraArgs.Margin = new System.Windows.Forms.Padding(0);
+            this.textBoxExtraArgs.Name = "textBoxExtraArgs";
+            this.textBoxExtraArgs.Size = new System.Drawing.Size(213, 20);
+            this.textBoxExtraArgs.TabIndex = 4;
             // 
-            // buttonSaveTo
+            // labelExtraArgs
             // 
-            this.buttonSaveTo.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.buttonSaveTo.Location = new System.Drawing.Point(213, 24);
-            this.buttonSaveTo.Margin = new System.Windows.Forms.Padding(0);
-            this.buttonSaveTo.Name = "buttonSaveTo";
-            this.buttonSaveTo.Size = new System.Drawing.Size(71, 24);
-            this.buttonSaveTo.TabIndex = 3;
-            this.buttonSaveTo.Text = "Save To...";
-            this.buttonSaveTo.UseVisualStyleBackColor = true;
-            this.buttonSaveTo.Click += new System.EventHandler(this.buttonSaveTo_Click);
+            this.labelExtraArgs.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.labelExtraArgs.Location = new System.Drawing.Point(216, 39);
+            this.labelExtraArgs.Name = "labelExtraArgs";
+            this.labelExtraArgs.Size = new System.Drawing.Size(65, 21);
+            this.labelExtraArgs.TabIndex = 5;
+            this.labelExtraArgs.Text = ": Extra Args";
+            this.labelExtraArgs.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // Main
             // 
@@ -202,6 +227,8 @@
         private System.Windows.Forms.TextBox textBoxSaveDir;
         private System.Windows.Forms.Button buttonSaveTo;
         private System.Windows.Forms.FolderBrowserDialog folderBrowserDialogMain;
+        private System.Windows.Forms.TextBox textBoxExtraArgs;
+        private System.Windows.Forms.Label labelExtraArgs;
     }
 }
 

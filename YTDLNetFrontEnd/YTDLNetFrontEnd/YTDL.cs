@@ -13,7 +13,7 @@ namespace com.captainalm.YTDLNetFrontEnd
     {
         private static string[] pathLocs = Environment.GetEnvironmentVariable("PATH").Split(";".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
 
-        public static MonitorableProcess executeApplication(string target)
+        public static MonitorableProcess executeApplication(string target, string extra)
         {
             var packageName = "";
             switch (getInstalled())
@@ -28,7 +28,7 @@ namespace com.captainalm.YTDLNetFrontEnd
                     return null;
             }
             var pyProSet = new ProcessStartInfo(findExecutableInPath("python"), "-m " + packageName + " --hls-prefer-native " +
-                ((getInstalled() == ApplicationType.YT_DLP) ? "-N 16 " : "") + "\"" + target + "\"")
+                ((getInstalled() == ApplicationType.YT_DLP) ? "-N 16 " : "") + "\"" + target + "\"" + (extra.Equals("") ? "" : " " + extra))
                 { UseShellExecute = false, CreateNoWindow = true, RedirectStandardOutput = true, RedirectStandardError = true, StandardOutputEncoding = Encoding.UTF8, StandardErrorEncoding = Encoding.UTF8 };
             return new MonitorableProcess(pyProSet);
         }

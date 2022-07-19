@@ -130,15 +130,20 @@ namespace com.captainalm.YTDLNetFrontEnd
                     }
 
                     var theTarget = "";
+                    var extraArgs = "";
 
                     this.Invoke(new Action(() =>
                         {
                             theTarget = textBoxEntry.Text;
+                            extraArgs = textBoxExtraArgs.Text;
                             textBoxEntry.Text = "";
                             textBoxOutput.AppendText("Downloading: " + theTarget + Environment.NewLine);
+                            if (!extraArgs.Equals("")) {
+                                textBoxOutput.AppendText("Extra Arguments: " + extraArgs + Environment.NewLine);
+                            }
                         }));
 
-                    theProcess = YTDL.executeApplication(theTarget);
+                    theProcess = YTDL.executeApplication(theTarget, extraArgs);
                     if (theProcess != null)
                     {
                         theProcess.addOuputReceiver(new OutputReceiverTextbox(textBoxOutput));
