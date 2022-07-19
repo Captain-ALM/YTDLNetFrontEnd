@@ -30,17 +30,17 @@
         {
             this.tableLayoutPanelMain = new System.Windows.Forms.TableLayoutPanel();
             this.tableLayoutPanelEntry = new System.Windows.Forms.TableLayoutPanel();
+            this.textBoxExtraArgs = new System.Windows.Forms.TextBox();
             this.buttonSaveTo = new System.Windows.Forms.Button();
             this.textBoxSaveDir = new System.Windows.Forms.TextBox();
             this.textBoxEntry = new System.Windows.Forms.TextBox();
             this.buttonGo = new System.Windows.Forms.Button();
+            this.labelExtraArgs = new System.Windows.Forms.Label();
             this.textBoxOutput = new System.Windows.Forms.TextBox();
             this.buttonInstall = new System.Windows.Forms.Button();
             this.buttonExit = new System.Windows.Forms.Button();
             this.backgroundWorkerMain = new System.ComponentModel.BackgroundWorker();
             this.folderBrowserDialogMain = new System.Windows.Forms.FolderBrowserDialog();
-            this.textBoxExtraArgs = new System.Windows.Forms.TextBox();
-            this.labelExtraArgs = new System.Windows.Forms.Label();
             this.tableLayoutPanelMain.SuspendLayout();
             this.tableLayoutPanelEntry.SuspendLayout();
             this.SuspendLayout();
@@ -91,6 +91,15 @@
             this.tableLayoutPanelEntry.Size = new System.Drawing.Size(284, 60);
             this.tableLayoutPanelEntry.TabIndex = 0;
             // 
+            // textBoxExtraArgs
+            // 
+            this.textBoxExtraArgs.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBoxExtraArgs.Location = new System.Drawing.Point(0, 39);
+            this.textBoxExtraArgs.Margin = new System.Windows.Forms.Padding(0);
+            this.textBoxExtraArgs.Name = "textBoxExtraArgs";
+            this.textBoxExtraArgs.Size = new System.Drawing.Size(213, 20);
+            this.textBoxExtraArgs.TabIndex = 4;
+            // 
             // buttonSaveTo
             // 
             this.buttonSaveTo.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -133,6 +142,16 @@
             this.buttonGo.UseVisualStyleBackColor = true;
             this.buttonGo.Click += new System.EventHandler(this.buttonGo_Click);
             // 
+            // labelExtraArgs
+            // 
+            this.labelExtraArgs.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.labelExtraArgs.Location = new System.Drawing.Point(216, 39);
+            this.labelExtraArgs.Name = "labelExtraArgs";
+            this.labelExtraArgs.Size = new System.Drawing.Size(65, 21);
+            this.labelExtraArgs.TabIndex = 5;
+            this.labelExtraArgs.Text = ": Extra Args";
+            this.labelExtraArgs.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
             // textBoxOutput
             // 
             this.tableLayoutPanelMain.SetColumnSpan(this.textBoxOutput, 2);
@@ -174,25 +193,6 @@
             // backgroundWorkerMain
             // 
             this.backgroundWorkerMain.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorkerMain_DoWork);
-            // 
-            // textBoxExtraArgs
-            // 
-            this.textBoxExtraArgs.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxExtraArgs.Location = new System.Drawing.Point(0, 39);
-            this.textBoxExtraArgs.Margin = new System.Windows.Forms.Padding(0);
-            this.textBoxExtraArgs.Name = "textBoxExtraArgs";
-            this.textBoxExtraArgs.Size = new System.Drawing.Size(213, 20);
-            this.textBoxExtraArgs.TabIndex = 4;
-            // 
-            // labelExtraArgs
-            // 
-            this.labelExtraArgs.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.labelExtraArgs.Location = new System.Drawing.Point(216, 39);
-            this.labelExtraArgs.Name = "labelExtraArgs";
-            this.labelExtraArgs.Size = new System.Drawing.Size(65, 21);
-            this.labelExtraArgs.TabIndex = 5;
-            this.labelExtraArgs.Text = ": Extra Args";
-            this.labelExtraArgs.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // Main
             // 
