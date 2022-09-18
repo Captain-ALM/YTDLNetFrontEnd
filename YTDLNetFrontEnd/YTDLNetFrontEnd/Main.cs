@@ -81,11 +81,22 @@ namespace com.captainalm.YTDLNetFrontEnd
 
         private void backgroundWorkerMain_DoWork(object sender, DoWorkEventArgs e)
         {
+            setEnableButtons(false);
+
+            if (theProcess != null)
+            {
+                if (((Control.ModifierKeys & Keys.Shift) == Keys.Shift)) theProcess.kill();
+                theProcess.waitForExit();
+                theProcess.close();
+            }
+
             switch ((BWArg)e.Argument)
             {
                 case BWArg.Install:
-                    setEnableButtons(false);
-
+                    this.Invoke(new Action(() =>
+                        {
+                            textBoxOutput.AppendText("Updating YT-DL BackEnd..." + Environment.NewLine);
+                        }));
                     using (var locpro =
                     YTDL.executeInstall((YTDL.getInstalled() != ApplicationType.Unavailable) ? YTDL.getInstalled() :
                     (((Control.ModifierKeys & Keys.Shift) == Keys.Shift) ? ApplicationType.YoutubeDL : ApplicationType.YT_DLP),
@@ -120,15 +131,6 @@ namespace com.captainalm.YTDLNetFrontEnd
                     setEnableButtons(true);
                     break;
                 case BWArg.Go:
-                    setEnableButtons(false);
-
-                    if (theProcess != null)
-                    {
-                        if (((Control.ModifierKeys & Keys.Shift) == Keys.Shift)) theProcess.kill();
-                        theProcess.waitForExit();
-                        theProcess.close();
-                    }
-
                     var theTarget = "";
                     var extraArgs = "";
 

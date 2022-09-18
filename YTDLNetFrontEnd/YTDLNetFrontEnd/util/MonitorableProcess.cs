@@ -12,6 +12,7 @@ namespace com.captainalm.YTDLNetFrontEnd.util
         protected Process representation;
         protected List<IProcessOuputReceiver> outputReceivers = new List<IProcessOuputReceiver>();
         protected List<IProcessOuputReceiver> errorReceivers = new List<IProcessOuputReceiver>();
+        protected bool closed = false;
 
         private object inputSLock = new object();
         private object outputSLock = new object();
@@ -68,7 +69,7 @@ namespace com.captainalm.YTDLNetFrontEnd.util
         {
             lock (processSLock)
             {
-                if (!startInfo.RedirectStandardInput || representation == null || representation.HasExited) return;
+                if (!startInfo.RedirectStandardInput || representation == null || closed || representation.HasExited) return;
                 lock (inputSLock)
                 {
                     representation.StandardInput.Write(inputData);
@@ -78,6 +79,7 @@ namespace com.captainalm.YTDLNetFrontEnd.util
 
         public Process start()
         {
+            if (closed) return null;
             lock (processSLock)
             {
                 representation = Process.Start(startInfo);
@@ -128,7 +130,7 @@ namespace com.captainalm.YTDLNetFrontEnd.util
 
         public void waitForExit()
         {
-            if (representation == null) return;
+            if (representation == null || closed) return;
             if (!representation.HasExited) representation.WaitForExit();
         }
 
@@ -139,7 +141,8 @@ namespace com.captainalm.YTDLNetFrontEnd.util
 
         public void close()
         {
-            if (representation == null) return;
+            if (representation == null || closed) return;
+            closed = true;
             waitForExit();
             if (representation != null && startInfo.RedirectStandardInput) representation.StandardInput.Close();
             representation.Close();
@@ -147,7 +150,7 @@ namespace com.captainalm.YTDLNetFrontEnd.util
 
         public void kill()
         {
-            if (representation != null && !representation.HasExited) representation.Kill();
+            if (representation != null && !closed && !representation.HasExited) representation.Kill();
         }
     }
 }
